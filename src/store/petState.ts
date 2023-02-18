@@ -23,6 +23,7 @@ export type Pet = {
   healthy: HealthyPet;
   imgPic: string;
   timeLeft: number | null;
+  rentalTime: number;
   deliveredStatus: {
     onDelivering: boolean;
     deliver: Deliver | null;
@@ -48,6 +49,7 @@ export const usePetState = defineStore("petState", {
         imgPic:
           "https://upload.wikimedia.org/wikipedia/commons/9/9b/Gustav_chocolate.jpg",
         timeLeft: null,
+        rentalTime: 60,
         deliveredStatus: {
           onDelivering: true,
           deliver: new Deliver(
@@ -74,6 +76,7 @@ export const usePetState = defineStore("petState", {
         imgPic:
           "https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2017/11/02165956/Airedale-Terrier-standing-stacked-outdoors.jpg",
         timeLeft: 58,
+        rentalTime: 90,
         deliveredStatus: {
           onDelivering: false,
           deliver: null,

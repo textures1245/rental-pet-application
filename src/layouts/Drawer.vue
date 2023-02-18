@@ -4,13 +4,16 @@ import { useDisplay } from "vuetify";
 import { useUserState } from "../store/userState";
 import UserInfo from "../features/UserInfo.vue";
 import UserPetList from "../features/UserPetList.vue";
+import { Ref } from "vue";
 
 export type DrawerMenu = {
   prependIcon?: string;
   title: string;
-  value?: string;
+  value?: DrawerOptionValue | string;
   link?: string;
 };
+
+type DrawerOptionValue = "none" | "userInfo" | "userPet";
 
 export default {
   components: { UserInfo, UserPetList },
@@ -22,18 +25,24 @@ export default {
       {
         prependIcon: "mdi-dog",
         title: "สัตว์เลื้ยงของฉัน",
-        value: "myPet",
+        value: "userPet",
         link: "my-pet-list",
       },
       {
         prependIcon: "mdi-account",
         title: "ข้อมูลบัญชี",
-        value: "accountInfo",
+        value: "userInfo",
         link: "account-info",
       },
     ];
 
     const mainDrawer = <DrawerMenu[]>[
+      {
+        prependIcon: "mdi-home-heart",
+        title: "หน้าหลัก",
+        value: "dashboard",
+        link: "/dashboard",
+      },
       {
         prependIcon: "mdi-dog-side",
         title: "รายการสัตว์",
@@ -60,14 +69,9 @@ export default {
       user: useUserState().getUserByID(0),
       display: useDisplay(),
       userDrawer: {
-        toggleOptionDrawer: ref(true),
+        toggleOptionDrawer: <Ref<"none" | "userInfo" | "userPet">>ref("none"),
       },
       drawer: true,
-      items: [
-        { title: "Home", icon: "mdi-home-city" },
-        { title: "My Account", icon: "mdi-account" },
-        { title: "Users", icon: "mdi-account-group-outline" },
-      ],
       rail: true,
     };
   },
@@ -75,9 +79,6 @@ export default {
   computed: {
     manualToggleUserDrawer() {
       return this.display.mdAndDown;
-    },
-    manualToggleUserSideDrawer() {
-      return this.display.mdAndDown ? false : true;
     },
   },
 };
@@ -128,7 +129,7 @@ export default {
     <v-list density="compact" nav>
       <v-list-item
         v-for="menu of userMenu"
-        @click="() => (userDrawer.toggleOptionDrawer = false)"
+        @click="() => (userDrawer.toggleOptionDrawer = <DrawerOptionValue>menu.value)"
         :prepend-icon="menu.prependIcon"
         :title="menu.title"
         :value="menu.value || ''"
@@ -137,8 +138,8 @@ export default {
   </v-navigation-drawer>
 
   <v-navigation-drawer
-    :temporary="userDrawer.toggleOptionDrawer"
-    :permanent="!userDrawer.toggleOptionDrawer && manualToggleUserSideDrawer"
+    :temporary="userDrawer.toggleOptionDrawer === 'none'"
+    :permanent="userDrawer.toggleOptionDrawer !== 'none'"
     location="right"
     rounded
     width="300"
@@ -148,12 +149,17 @@ export default {
       <v-btn
         variant="text"
         icon="mdi-chevron-right"
-        @click.stop="userDrawer.toggleOptionDrawer = true"
+        @click.stop="userDrawer.toggleOptionDrawer = 'none'"
       ></v-btn>
     </template>
     <v-card variant="text" class="mx-auto" max-width="500">
-      <!-- <UserInfo :User="user"></UserInfo> -->
-      <UserPetList></UserPetList>
+      <UserInfo
+        v-if="userDrawer.toggleOptionDrawer === 'userInfo'"
+        :User="user"
+      ></UserInfo>
+      <UserPetList
+        v-if="userDrawer.toggleOptionDrawer === 'userPet'"
+      ></UserPetList>
     </v-card>
   </v-navigation-drawer>
 </template>

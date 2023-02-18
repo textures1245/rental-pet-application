@@ -1,16 +1,24 @@
 <script lang="ts">
 import { useUserState, VIPUser, User } from "../store/UserState";
+import LoadingProps from "../components/LoadingProps.vue";
 export default {
+  components: { LoadingProps },
   props: {
     User: Object,
   },
   data() {
-    return {};
+    return {
+      onLoading: true,
+    };
   },
 };
 </script>
 <template>
-  <v-list lines="two">
+  <LoadingProps
+    v-if="onLoading"
+    @loadedAsync="() => (onLoading = false)"
+  ></LoadingProps>
+  <v-list v-else lines="two">
     <v-list-subheader>
       <div v-if="User!.status === 'vip'" class="flex gap-2 items-center">
         <div class="">

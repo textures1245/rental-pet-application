@@ -2,6 +2,8 @@
 export type CardType = {
   title: string;
   imgSrc: string;
+  helpDetail?: string;
+  title2?: String;
   subTitle?: string;
   subTitleArr?: [];
   path?: object;
@@ -16,12 +18,14 @@ export default {
   props: {
     path: Object,
     buttonText: String,
+    helpDetail: String,
     colorText: String,
     imgSrc: String,
     axis: String,
     width: String,
     height: String,
     title: String,
+    title2: String,
     subTitle: String,
     subTitleArr: Array,
   },
@@ -30,13 +34,30 @@ export default {
 <template>
   <div
     :class="`w-[${width}] !h-[${height}] `"
-    class="h-full card md:card-side shadow-xl glass"
+    class="h-full card lg:card-side shadow-xl glass"
   >
-    <figure class="object-cover w-full md:w-6/12">
+    <figure class="object-cover w-full lg:w-6/12">
       <v-img :lazy-src="imgSrc" cover :src="imgSrc" alt="Movie"></v-img>
     </figure>
-    <div :class="colorText" class="card-body md:w-6/12 thai-p">
-      <h2 class="card-title">{{ title }}</h2>
+    <div :class="colorText" class="card-body lg:w-6/12 thai-p">
+      <article class="prose prose-sm lg:prose">
+        <h2>
+          {{ title }}
+          <v-tooltip location="top" class="break-words mx-auto">
+            <template v-slot:activator="{ props }">
+              <v-icon
+                size="16"
+                icon="mdi-help-circle-outline"
+                v-bind="props"
+              ></v-icon>
+            </template>
+            <p>{{ helpDetail }}</p>
+          </v-tooltip>
+        </h2>
+        <blockquote class="lead">
+          {{ title2 }}
+        </blockquote>
+      </article>
       <p v-if="subTitle" class="text-base indent-10 break-words">
         {{ subTitle.length > 200 ? subTitle.slice(0, 200) + "..." : subTitle }}
       </p>

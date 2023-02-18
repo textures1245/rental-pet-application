@@ -6,7 +6,7 @@ module.exports = {
     extend: {},
   },
   // add daisyUI plugin
-  plugins: [require("daisyui")],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 
   // daisyUI config (optional)
   daisyui: {

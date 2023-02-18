@@ -1,17 +1,24 @@
 <script lang="ts">
 import { Pet, usePetState } from "../store/petState";
+import LoadingProps from "../components/LoadingProps.vue";
 
 export default {
+  components: { LoadingProps },
   props: ["UserPets"],
   data() {
     return {
       pets: usePetState().getPets,
+      onLoading: true,
     };
   },
 };
 </script>
 <template>
-  <v-list lines="two">
+  <LoadingProps
+    v-if="onLoading"
+    @loadedAsync="() => (onLoading = false)"
+  ></LoadingProps>
+  <v-list v-else lines="two">
     <v-list-subheader>
       <div class="flex gap-2 items-center my-4">
         <div class="">
@@ -37,7 +44,7 @@ export default {
             <v-list-item :prepend-avatar="pet.imgPic" :title="pet.name">
               <template v-slot:subtitle>
                 <span class="font-weight-bold text-caption capitalize">
-                  <v-icon icon="mdi-account-circle-outline"> </v-icon>
+                  <v-icon icon="mdi-paw"> </v-icon>
                   {{ pet.gender }}
                 </span>
               </template>
@@ -63,6 +70,7 @@ export default {
                             size="34"
                           ></v-img>
                         </v-avatar>
+                        <p class="text-[8px] mt-0.5">ผู้จัดส่ง</p>
                       </div>
                       <div class="ml-4">
                         <div class="font-weight-bold text-caption">
@@ -133,6 +141,11 @@ export default {
             </div>
             <div class="">
               <p class="text-gray-600">ประเภทการเช่า: {{ pet.rentType }}</p>
+            </div>
+            <div class="">
+              <p class="text-gray-600">
+                เวลาในการเช่าทั้งหมด: {{ pet.rentalTime }} นาที
+              </p>
             </div>
             <div class="" v-if="pet.timeLeft !== null">
               <p class="text-gray-600">เวลาคงเหลือ: {{ pet.timeLeft }} นาที</p>
