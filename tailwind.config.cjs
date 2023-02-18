@@ -6,11 +6,11 @@ module.exports = {
     extend: {},
   },
   // add daisyUI plugin
-  plugins: [require("daisyui"), require("@tailwindcss/typography")],
+  plugins: [require("daisyui")],
 
   // daisyUI config (optional)
   daisyui: {
-    styled: false,
+    styled: true,
     themes: ["fantasy", "forest"],
     base: true,
     utils: true,
