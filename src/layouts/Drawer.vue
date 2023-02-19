@@ -2,18 +2,14 @@
 import { ref } from "vue";
 import { useDisplay } from "vuetify";
 import { useUserState } from "../store/userState";
+import {
+  usePathStore,
+  DrawerMenu,
+  DrawerOptionValue,
+} from "../store/pathState";
 import UserInfo from "../features/UserInfo.vue";
 import UserPetList from "../features/UserPetList.vue";
 import { Ref } from "vue";
-
-export type DrawerMenu = {
-  prependIcon?: string;
-  title: string;
-  value?: DrawerOptionValue | string;
-  link?: string;
-};
-
-type DrawerOptionValue = "none" | "userInfo" | "userPet";
 
 export default {
   components: { UserInfo, UserPetList },
@@ -21,47 +17,9 @@ export default {
     setMenuDrawer: Boolean,
   },
   setup() {
-    const userMenu = <DrawerMenu[]>[
-      {
-        prependIcon: "mdi-dog",
-        title: "สัตว์เลื้ยงของฉัน",
-        value: "userPet",
-        link: "my-pet-list",
-      },
-      {
-        prependIcon: "mdi-account",
-        title: "ข้อมูลบัญชี",
-        value: "userInfo",
-        link: "account-info",
-      },
-    ];
+    const userMenu: DrawerMenu[] = usePathStore().getUserPaths;
 
-    const mainDrawer = <DrawerMenu[]>[
-      {
-        prependIcon: "mdi-home-heart",
-        title: "หน้าหลัก",
-        value: "dashboard",
-        link: "/dashboard",
-      },
-      {
-        prependIcon: "mdi-dog-side",
-        title: "รายการสัตว์",
-        value: "petList",
-        link: "/rental",
-      },
-      {
-        prependIcon: "mdi-calendar-clock",
-        title: "เช็คตารางการเช่าสัตว์วันนี้",
-        value: "checkSchedule",
-        link: "/pet-schedule-dashboard",
-      },
-      {
-        prependIcon: "mdi-file-sign",
-        title: "ทำสัญญาการเช่า",
-        value: "petContraction",
-        link: "/contraction",
-      },
-    ];
+    const mainDrawer: DrawerMenu[] = usePathStore().getAppPaths;
     return { userMenu, mainDrawer };
   },
   data() {
@@ -89,12 +47,14 @@ export default {
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
-      <v-list-item
-        v-for="menu in mainDrawer"
-        :prepend-icon="menu.prependIcon"
-        :title="menu.title"
-        :value="menu.value || ''"
-      ></v-list-item>
+      <router-link :to="menu.path" v-for="menu in mainDrawer">
+        <v-list-item
+          :active="$route.path === menu.path"
+          :prepend-icon="menu.prependIcon"
+          :title="menu.title"
+          :value="menu.name || ''"
+        ></v-list-item>
+      </router-link>
     </v-list>
   </v-navigation-drawer>
 
@@ -129,10 +89,10 @@ export default {
     <v-list density="compact" nav>
       <v-list-item
         v-for="menu of userMenu"
-        @click="() => (userDrawer.toggleOptionDrawer = <DrawerOptionValue>menu.value)"
+        @click="() => (userDrawer.toggleOptionDrawer = <DrawerOptionValue>menu.name)"
         :prepend-icon="menu.prependIcon"
         :title="menu.title"
-        :value="menu.value || ''"
+        :value="menu.name || ''"
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>

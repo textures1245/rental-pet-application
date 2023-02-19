@@ -65,11 +65,11 @@ export default {
         <li v-for="t in (subTitleArr as string[])">{{ t }}</li>
       </ul>
       <div class="card-actions h-full !items-end justify-end">
-        <NuxtLink v-if="path?.link" :to="path?.link" rel="">
+        <router-link v-if="path?.link" :to="path?.link" rel="">
           <button class="btn btn-primary">
             {{ buttonText || "เรียนรู้เพิ่มเดิม" }}
           </button>
-        </NuxtLink>
+        </router-link>
         <button v-else class="btn btn-primary">
           {{ buttonText || "เรียนรู้เพิ่มเดิม" }}
         </button>

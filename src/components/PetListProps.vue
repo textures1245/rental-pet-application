@@ -1,0 +1,120 @@
+<script lang="ts">
+import { usePetState } from "../store/petState";
+import PetFilterDialog from "../components/PetFilterDialog.vue";
+
+export default {
+  components: { PetFilterDialog },
+  props: [],
+  data() {
+    return {
+      pets: usePetState().getPets,
+      lorem:
+        "Lorem ipsum dolor sit amet, at aliquam vivendum vel, everti delicatissimi cu eos. Dico iuvaret debitis mel an, et cum zril menandri. Eum in consul legimus accusam. Ea dico abhorreant duo, quo illum minimum incorrupte no, nostro voluptaria sea eu. Suas eligendi ius at, at nemore equidem est. Sed in error hendrerit, in consul constituam cum.",
+    };
+  },
+};
+</script>
+<template>
+  <div class="text-end mr-10">
+    <PetFilterDialog></PetFilterDialog>
+  </div>
+  <v-expansion-panels variant="popout" class="pa-4">
+    <v-expansion-panel v-for="(pet, i) in pets" hide-actions>
+      <v-expansion-panel-title>
+        <v-row align="center" class="spacer" no-gutters>
+          <v-col cols="4" sm="2" md="1">
+            <v-avatar size="42">
+              <v-img cover size="42" :src="pet.imgPic"></v-img>
+            </v-avatar>
+          </v-col>
+
+          <v-col class="text-no-wrap text-start mx-auto" cols="5" sm="3">
+            <strong v-html="pet.name"></strong>
+            <div class="flex text-caption mt-2">
+              {{ pet.species.breed }}
+            </div>
+          </v-col>
+          <v-col></v-col>
+          <v-col class="text-end mr-3">
+            <v-chip color="green" class="" label small> NEWS </v-chip>
+          </v-col>
+        </v-row>
+      </v-expansion-panel-title>
+
+      <v-expansion-panel-text>
+        <v-card-text>
+          <div class="grid grid-cols-1 md:grid-cols-4 max-h-full">
+            <div class="place-self-center col-span-1">
+              <div class="avatar">
+                <div class="w-28 h-full mask mask-squircle">
+                  <v-img :src="pet.imgPic"></v-img>
+                </div>
+              </div>
+            </div>
+            <div class="col-span-3">
+              <div
+                class="grid grid-cols-1 md:grid-cols-3 text-xs gap-2 gap-y-3"
+              >
+                <div class="flex flex-col gap-2">
+                  <h1 class="font-bold">
+                    ลายละเอียด <br />
+                    (Pet detail)
+                  </h1>
+                  <hr class="border-gray-800" />
+                  <p class="text-gray-600">
+                    ประเภทสัตว์: {{ pet.species.species }}
+                  </p>
+
+                  <p class="text-gray-600">สายพันธ์: {{ pet.species.breed }}</p>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <h1 class="font-bold">
+                    สุขภาพของสัตว์ <br />
+                    (Pet Health)
+                  </h1>
+                  <hr class="border-gray-800" />
+                  <div class="">
+                    <p
+                      class="text-gray-600"
+                      :class="{
+                        'text-warning': pet.healthy.heathOrder === 'unhealthy',
+                        'text-success': pet.healthy.heathOrder === 'healthy',
+                      }"
+                    >
+                      ลำดับสุขภาพสัตว์: {{ pet.healthy.heathOrder }}
+                    </p>
+                  </div>
+                  <div class="">
+                    <p class="text-gray-600">
+                      ตรวจครั้งล่าสุด:
+                      {{ pet.healthy.lastChecked.toDateString() }}
+                    </p>
+                  </div>
+                  <div v-if="pet.healthy.probDesc">
+                    <p>ลายละเอียดการวินิจฉัย:</p>
+                    <p class="text-gray-600">{{ pet.healthy.probDesc }}</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <h1 class="font-bold">
+                    ลายละเอียดการเช่ายืม <br />
+                    (Rental Detail)
+                  </h1>
+                  <hr class="border-gray-800" />
+                  <div class="">
+                    <p class="text-gray-600">
+                      ประเภทการเช่า: {{ pet.rentType }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </v-card-text>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
+</template>
+<style scoped></style>

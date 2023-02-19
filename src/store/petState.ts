@@ -4,8 +4,10 @@ class Deliver {
   constructor(public name: string, public tel: string, public imgSrc: string) {}
 }
 
+export type PetCategory = "cat" | "dog" | "bunny" | "bird";
+
 type PetSpecies = {
-  species: "cat" | "dog";
+  species: PetCategory;
   breed: string;
 };
 
@@ -74,7 +76,30 @@ export const usePetState = defineStore("petState", {
           probDesc: "ขาถลอกทางด้านซ้ายบน",
         },
         imgPic:
-          "https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2017/11/02165956/Airedale-Terrier-standing-stacked-outdoors.jpg",
+          "https://images.unsplash.com/photo-1546491764-67a5b8d5b3ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+        timeLeft: 58,
+        rentalTime: 90,
+        deliveredStatus: {
+          onDelivering: false,
+          deliver: null,
+        },
+        rentType: "Indoor",
+      },
+      {
+        id: 2,
+        name: "Pochita",
+        species: {
+          species: "dog",
+          breed: "Airedale Terrier",
+        },
+        gender: "male",
+        healthy: {
+          heathOrder: "unhealthy",
+          lastChecked: new Date("2023-1-15"),
+          probDesc: "ขาถลอกทางด้านซ้ายบน",
+        },
+        imgPic:
+          "https://images.unsplash.com/photo-1558788353-f76d92427f16?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=738&q=80",
         timeLeft: 58,
         rentalTime: 90,
         deliveredStatus: {

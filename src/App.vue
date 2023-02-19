@@ -20,7 +20,7 @@ import BackgroundOverlay from "./components/BackgroundOverlay.vue";
       <AppBar></AppBar>
       <Drawer></Drawer>
       <v-main class="h-full">
-        <Dashboard></Dashboard>
+        <router-view></router-view>
       </v-main>
     </v-layout>
   </v-app>
