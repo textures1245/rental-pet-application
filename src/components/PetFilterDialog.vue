@@ -1,5 +1,15 @@
 <script lang="ts">
+import { PropType } from "vue";
+
 export default {
+  props: {
+    filter: {
+      type: Object,
+      value: {
+        breeds: Array as PropType<string[]>,
+      },
+    },
+  },
   data: () => ({
     dialog: false,
     tags: [
@@ -37,9 +47,13 @@ export default {
 
           <div class="pa-4">
             <v-chip-group selected-class="text-primary" column>
-              <v-chip v-for="tag in tags" :key="tag">
-                {{ tag }}
-              </v-chip>
+              <div id="bread-tag" class="w-full">
+                <p>สายพันธ์ุ (Breeds)</p>
+                <hr class="border-gray-400 my-2" />
+                <v-chip v-for="breadTag in filter!.value.breeds">
+                  {{ breadTag }}
+                </v-chip>
+              </div>
             </v-chip-group>
           </div>
         </v-sheet>

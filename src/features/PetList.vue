@@ -1,6 +1,6 @@
 <script lang="ts">
 import BackgroundOverlay from "../components/BackgroundOverlay.vue";
-import { PetCategory } from "../store/petState";
+import { PetCategory, usePetState } from "../store/petState";
 import PetListProps from "../components/PetListProps.vue";
 
 type PetCardCategory = {
@@ -44,11 +44,13 @@ export default {
     ];
 
     const category = ["สุนัข", "แมว", "กระต่าย", "นก"];
-    return { petCardSlides, category };
+    const modelCategory = ["dog", "cat", "bunny", "bird"];
+    return { petCardSlides, category, modelCategory };
   },
   components: { BackgroundOverlay, PetListProps },
   data: () => ({
     model: null,
+    petStates: usePetState().getPets,
   }),
 };
 </script>
@@ -108,7 +110,13 @@ export default {
             <h1 class="text-3xl self-center">
               {{ category[model] }}
             </h1>
-            <PetListProps></PetListProps>
+            <PetListProps
+              :pets="
+                petStates.filter(
+                  (p) => p.species.species === modelCategory[model || 0]
+                )
+              "
+            ></PetListProps>
           </div>
         </v-sheet>
       </v-expand-transition>

@@ -34,14 +34,13 @@ const routes = [
     name: "checkSchedule",
     path: "/pet-schedule-checker",
     component: ScheduleCheckerFeature,
-  }, 
+  },
   {
     name: "petContraction",
     path: "/contractor",
     component: ContractorFeature,
   },
 ];
-
 const router = createRouter({
   // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
   history: createWebHashHistory(),

@@ -1,22 +1,28 @@
 <script lang="ts">
-import { usePetState } from "../store/petState";
+import { PropType } from "vue";
+import { usePetState, Pet } from "../store/petState";
 import PetFilterDialog from "../components/PetFilterDialog.vue";
 
 export default {
   components: { PetFilterDialog },
-  props: [],
+  props: {
+    pets: {
+      type: Array as PropType<Pet[]>,
+      required: true,
+    },
+  },
   data() {
     return {
-      pets: usePetState().getPets,
-      lorem:
-        "Lorem ipsum dolor sit amet, at aliquam vivendum vel, everti delicatissimi cu eos. Dico iuvaret debitis mel an, et cum zril menandri. Eum in consul legimus accusam. Ea dico abhorreant duo, quo illum minimum incorrupte no, nostro voluptaria sea eu. Suas eligendi ius at, at nemore equidem est. Sed in error hendrerit, in consul constituam cum.",
+      // pets: usePetState().getPets,
     };
   },
 };
 </script>
 <template>
   <div class="text-end mr-10">
-    <PetFilterDialog></PetFilterDialog>
+    <PetFilterDialog
+      :filter="{ value: { breeds: pets.map((p) => p.species.breed) } }"
+    ></PetFilterDialog>
   </div>
   <v-expansion-panels variant="popout" class="pa-4">
     <v-expansion-panel v-for="(pet, i) in pets" hide-actions>
