@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { Pet, usePetState } from "./petState";
 
 export type User = {
   id: number;
@@ -11,6 +12,7 @@ export type User = {
   email: string;
   imgPic: string;
   status: "member" | "vip";
+  petsOwning: Pet[];
 };
 
 type VIPState = {
@@ -47,6 +49,7 @@ export const useUserState = defineStore("userState", {
           startDate: new Date("2023-1-1"),
           endDate: new Date("2023-2-1"),
           creditEarned: 232,
+          petsOwning: usePetState().getPets.slice(0,2),
         },
       ],
     };

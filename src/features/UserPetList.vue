@@ -1,11 +1,11 @@
 <script lang="ts">
-import { Pet, usePetState } from "../store/petState";
+import { useUserState } from "../store/userState";
 
 export default {
   props: ["UserPets"],
   data() {
     return {
-      pets: usePetState().getPets,
+      pets: useUserState().getUserByID(0).petsOwning,
     };
   },
 };
@@ -42,13 +42,13 @@ export default {
                 </span>
               </template>
               <template v-slot:append>
-                <div class="ml-10">
+                <div class="ml-5">
                   <v-tooltip location="top" content-props="">
                     <template v-slot:activator="{ props }">
                       <v-avatar
                         v-bind="props"
                         v-if="pet.deliveredStatus.onDelivering === true"
-                        class="bg-base-200"
+                        class="ml-5 bg-base-200"
                         size="20"
                       >
                         <v-icon icon="mdi-moped" size="16"></v-icon>
