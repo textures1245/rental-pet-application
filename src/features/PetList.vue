@@ -2,6 +2,8 @@
 import BackgroundOverlay from "../components/BackgroundOverlay.vue";
 import { PetCategory, usePetState } from "../store/petState";
 import PetListProps from "../components/PetListProps.vue";
+import LoadingProps from "../components/LoadingProps.vue";
+import { ref } from "vue";
 
 type PetCardCategory = {
   species: PetCategory;
@@ -11,6 +13,8 @@ type PetCardCategory = {
 };
 
 export default {
+  components: { BackgroundOverlay, PetListProps, LoadingProps },
+
   setup() {
     const petCardSlides: PetCardCategory[] = [
       {
@@ -45,9 +49,8 @@ export default {
 
     const category = ["สุนัข", "แมว", "กระต่าย", "นก"];
     const modelCategory = ["dog", "cat", "bunny", "bird"];
-    return { petCardSlides, category, modelCategory };
+    return { petCardSlides, category, modelCategory, onLoaded: ref(true) };
   },
-  components: { BackgroundOverlay, PetListProps },
   data: () => ({
     model: null,
     petStates: usePetState().getPets,

@@ -10,7 +10,7 @@ export default {
   },
   methods: {
     async fakeLoader() {
-      const res = new Promise((r) => setTimeout(r, this.delay || 1000)).then(
+      const res = new Promise((r) => setTimeout(r, this.delay || 500)).then(
         () => {
           return false;
         }

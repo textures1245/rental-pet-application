@@ -1,6 +1,10 @@
 import { defineStore } from "pinia";
 
-export type DrawerOptionValue = "none" | "userInfo" | "userPet";
+export type DrawerOptionValue =
+  | "none"
+  | "userInfo"
+  | "userPet"
+  | "contractList";
 
 export type DrawerMenu = {
   prependIcon?: string;
@@ -41,7 +45,7 @@ export const usePathStore = defineStore("pathState", {
       {
         prependIcon: "mdi-draw-pen",
         title: "รายการสัญญาการเช่า",
-        name: "contract-list",
+        name: "contractList",
         path: "/contract-list",
       },
     ],

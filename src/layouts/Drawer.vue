@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ref } from "vue";
+import { ref, Ref } from "vue";
 import { useDisplay } from "vuetify";
 import { useUserState } from "../store/userState";
 import {
@@ -9,25 +9,32 @@ import {
 } from "../store/pathState";
 import UserInfo from "../features/UserInfo.vue";
 import UserPetList from "../features/UserPetList.vue";
-import { Ref } from "vue";
+import ContractList from "../features/ContractList.vue";
 
 export default {
-  components: { UserInfo, UserPetList },
+  components: { UserInfo, UserPetList, ContractList },
   props: {
     setMenuDrawer: Boolean,
   },
   setup() {
-    const userMenu: DrawerMenu[] = usePathStore().getUserPaths;
+    const userMenu: Ref<DrawerMenu[]> =
+      useUserState().$state.roleToggler === "user"
+        ? ref(usePathStore().getUserPaths)
+        : ref(usePathStore().getEmployeePaths);
 
-    const mainDrawer: DrawerMenu[] = usePathStore().getAppUserPaths;
+    const mainDrawer: Ref<DrawerMenu[]> =
+      useUserState().$state.roleToggler === "user"
+        ? ref(usePathStore().getAppUserPaths)
+        : ref(usePathStore().getAppEmployeePaths);
     return { userMenu, mainDrawer };
   },
   data() {
     return {
       user: useUserState().getUserRoleByID(0),
+      userState: useUserState(),
       display: useDisplay(),
       userDrawer: {
-        toggleOptionDrawer: <Ref<"none" | "userInfo" | "userPet">>ref("none"),
+        toggleOptionDrawer: <Ref<DrawerOptionValue>>ref("none"),
       },
       drawer: true,
       rail: true,
@@ -66,13 +73,17 @@ export default {
     :rail="manualToggleUserDrawer"
   >
     <v-list>
-      <v-list-item title="Sandra Adams" subtitle="sandra_a88@gmailcom">
+      <v-list-item :title="user.name" :subtitle="user.email">
         <template v-slot:prepend>
           <div class="indicator mr-4">
             <span class="indicator-item indicator-bottom">
               <v-icon
                 color="primary"
-                icon="mdi-check-decagram"
+                :icon="
+                  userState.roleToggler === 'user'
+                    ? 'mdi-check-decagram'
+                    : 'mdi-badge-account-horizontal'
+                "
                 size="18"
               ></v-icon>
             </span>
@@ -120,6 +131,9 @@ export default {
       <UserPetList
         v-if="userDrawer.toggleOptionDrawer === 'userPet'"
       ></UserPetList>
+      <ContractList
+        v-if="userDrawer.toggleOptionDrawer === 'contractList'"
+      ></ContractList>
     </v-card>
   </v-navigation-drawer>
 </template>

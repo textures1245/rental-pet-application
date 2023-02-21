@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { Pet, usePetState } from "./petState";
 import { Ref, ref } from "vue";
+import router from "../routes/appRoutes";
 
 type EmployeeRole = Admin;
 
@@ -26,17 +27,17 @@ export type User = {
 
 export type Employee = {
   id: number;
-  adminId: string;
+  employeeId: string;
   name: string;
   gender: "male" | "female";
-  citizenID: string;
+  citizenId: string;
   phoneNumber: string;
+  address: string;
   email: string;
   imgPic: string;
   role: EmployeeRole;
   startDate: Date;
   endDate: Date;
-  hiredSince: Date;
 };
 
 type VIPState = {
@@ -67,7 +68,7 @@ export const useUserState = defineStore("userState", {
           address: "San Andreas Local Street 27/4, New York, NY",
           email: "sandra_a88@gmailcom",
           imgPic: "https://randomuser.me/api/portraits/women/85.jpg",
-          phoneNumber: "1312312",
+          phoneNumber: "0654209589",
           status: "vip",
           subscriptionSince: new Date("2022-9-1"),
           startDate: new Date("2023-1-1"),
@@ -80,12 +81,13 @@ export const useUserState = defineStore("userState", {
       employees: <Employee[]>[
         {
           id: 0,
-          adminId: randomId(10),
-          name: "Bomm Lengend",
+          employeeId: randomId(10),
+          name: "Cjxhdudbdh Djdheudndj",
           gender: "male",
-          citizenID: randomId(10),
-          email: "boomlnwza007@gmail.com",
-          phoneNumber: "1312312",
+          citizenId: randomId(10),
+          address: "Vaneeva Ul., bld. 26, appt. 7",
+          email: "natchanuu5661@gmail.com",
+          phoneNumber: "0651281492",
           imgPic: "https://randomuser.me/api/portraits/men/85.jpg",
           role: { task: [""], type: "Admin" } as Admin,
           startDate: new Date("2022-9-12"),
@@ -115,6 +117,7 @@ export const useUserState = defineStore("userState", {
     },
     setActorRole(role: "user" | "admin"): void {
       this.$state.roleToggler = role;
+      router.push("/dashboard");
     },
   },
 });

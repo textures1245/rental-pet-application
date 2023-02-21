@@ -17,7 +17,6 @@ export default {
   },
   data() {
     return {
-      actorRole: ref(useUserState().$state.roleToggler),
       userState: useUserState(),
     };
   },
@@ -35,7 +34,11 @@ export default {
 <template>
   <v-system-bar class="!bg-secondary-content">
     <div class="flex gap-2">
-      <span class="font-semibold">Welcome back master!</span>
+      <span class="font-semibold">{{
+        userState.roleToggler === "user"
+          ? 'ตอนนี้คุณอยู่ในสถานะ "ลูกค้า VIP"'
+          : 'ตอนนี้คุณอยู่ในสถานะ "Admin'
+      }}</span>
       <v-icon icon="mdi-paw"></v-icon>
     </div>
     <v-spacer></v-spacer>
@@ -44,13 +47,20 @@ export default {
   </v-system-bar>
   <v-app-bar class="!bg-base-100">
     <template v-slot:prepend>
-      <v-app-bar-nav-icon icon="mdi-menu-swap-outline"></v-app-bar-nav-icon>
+      <v-avatar sizes="32">
+        <v-img
+          sizes="32"
+          src="https://img.freepik.com/free-vector/cute-dog-cute-cat-cartoon-illustration_138676-3219.jpg?w=826&t=st=1677001698~exp=1677002298~hmac=7e13f71990220d50070d41e58467ca306d2bc8cc4186628bb539241ca29df8e6"
+        ></v-img>
+      </v-avatar>
     </template>
 
     <v-app-bar-title class="font-[500]">Rental Pet</v-app-bar-title>
 
     <template v-slot:append>
-      <v-btn @click="() => onSwapRoleActor()" icon="mdi-account-convert"> </v-btn>
+      <p>สลับ Actor</p>
+      <v-btn @click="() => onSwapRoleActor()" icon="mdi-account-convert">
+      </v-btn>
     </template>
   </v-app-bar>
 </template>

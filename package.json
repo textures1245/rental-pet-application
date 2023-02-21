@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.1.96",
+    "@syncfusion/ej2-vue-grids": "^20.4.51",
     "daisyui": "^2.50.0",
     "pinia": "^2.0.30",
     "sweetalert2": "^11.7.2",

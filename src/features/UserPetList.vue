@@ -1,12 +1,15 @@
 <script lang="ts">
-import { toHandlers } from "vue";
+import { ref, toHandlers } from "vue";
 import { User, VIPUser, useUserState } from "../store/userState";
 import { Pet } from "../store/petState";
+import LoadingProps from "../components/LoadingProps.vue";
 
 export default {
+  components: { LoadingProps },
   props: ["pets"],
   data() {
     return {
+      onLoaded: ref(true),
       onRole: useUserState().$state.roleToggler,
       user: useUserState().$state.users[0],
       pets:
@@ -18,7 +21,11 @@ export default {
 };
 </script>
 <template>
-  <v-list lines="two">
+  <LoadingProps
+    v-if="onLoaded"
+    @loaded-async="() => (onLoaded = false)"
+  ></LoadingProps>
+  <v-list v-else lines="two">
     <v-list-subheader>
       <div class="flex gap-2 items-center my-4">
         <div class="">
@@ -185,7 +192,13 @@ export default {
             <div class="" v-if="pet.timeLeft !== null && onRole === 'user'">
               <p class="text-gray-600">เวลาคงเหลือ: {{ pet.timeLeft }} นาที</p>
             </div>
-            <v-btn v-if="onRole === 'admin'" size="small" color="primary" prepend-icon="mdi-check-bold">ยืนยันรายการ</v-btn>
+            <v-btn
+              v-if="onRole === 'admin'"
+              size="small"
+              color="primary"
+              prepend-icon="mdi-check-bold"
+              >ยืนยันรายการ</v-btn
+            >
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>

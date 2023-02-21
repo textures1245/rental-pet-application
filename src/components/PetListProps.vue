@@ -2,6 +2,7 @@
 import { PropType } from "vue";
 import { usePetState, Pet } from "../store/petState";
 import PetFilterDialog from "../components/PetFilterDialog.vue";
+import { useUserState } from "../store/userState";
 
 export default {
   components: { PetFilterDialog },
@@ -13,13 +14,22 @@ export default {
   },
   data() {
     return {
-      // pets: usePetState().getPets,
+      onRole: useUserState().$state.roleToggler,
     };
   },
 };
 </script>
 <template>
-  <div class="text-end mr-10">
+  <div class="ml-10 flex justify-between mr-10">
+    <div>
+      <v-btn
+        v-if="onRole === 'admin'"
+        class=""
+        color="primary"
+        prepend-icon="mdi-plus"
+        >เพื่ม</v-btn
+      >
+    </div>
     <PetFilterDialog
       :filter="{ value: { breeds: pets.map((p) => p.species.breed) } }"
     ></PetFilterDialog>
@@ -131,10 +141,19 @@ export default {
                 </div>
               </div>
             </div>
-            <div class="flex justify-end">
+            <div v-if="onRole === 'user'" class="flex justify-end">
               <v-btn class="" color="info" prepend-icon="mdi-gesture-tap"
                 >เช่า</v-btn
               >
+            </div>
+            <div v-else class="flex justify-end gap-3">
+              <v-btn
+                class=""
+                color="info"
+                prepend-icon="mdi-circle-edit-outline"
+                >แก้ไข</v-btn
+              >
+              <v-btn class="" color="error" prepend-icon="mdi-delete">ลบ</v-btn>
             </div>
           </div>
         </v-card-text>
