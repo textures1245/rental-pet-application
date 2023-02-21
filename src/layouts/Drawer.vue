@@ -19,12 +19,12 @@ export default {
   setup() {
     const userMenu: DrawerMenu[] = usePathStore().getUserPaths;
 
-    const mainDrawer: DrawerMenu[] = usePathStore().getAppPaths;
+    const mainDrawer: DrawerMenu[] = usePathStore().getAppUserPaths;
     return { userMenu, mainDrawer };
   },
   data() {
     return {
-      user: useUserState().getUserByID(0),
+      user: useUserState().getUserRoleByID(0),
       display: useDisplay(),
       userDrawer: {
         toggleOptionDrawer: <Ref<"none" | "userInfo" | "userPet">>ref("none"),
@@ -102,7 +102,7 @@ export default {
     :permanent="userDrawer.toggleOptionDrawer !== 'none'"
     location="right"
     rounded
-    width="300"
+    width="320"
   >
     <template v-slot:append>
       <hr class="border-gray-700" />

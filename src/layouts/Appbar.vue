@@ -1,10 +1,35 @@
 <script lang="ts">
+import { ref } from "vue";
+import { useUserState } from "../store/userState";
+import Swal from "sweetalert2";
 export default {
   props: [],
   setup() {
-    return {};
+    return {
+      onSwappedRoleAlert: () =>
+        Swal.fire({
+          icon: "success",
+          title: `Actor ของคุณอยู่ในสถานะ ${
+            useUserState().$state.roleToggler
+          } ในตอนนี้`,
+        }),
+    };
+  },
+  data() {
+    return {
+      actorRole: ref(useUserState().$state.roleToggler),
+      userState: useUserState(),
+    };
   },
   emits: ["toggleUserDrawer"],
+  methods: {
+    onSwapRoleActor() {
+      this.userState.roleToggler == "user"
+        ? this.userState.setActorRole("admin")
+        : this.userState.setActorRole("user");
+      this.onSwappedRoleAlert();
+    },
+  },
 };
 </script>
 <template>
@@ -25,10 +50,7 @@ export default {
     <v-app-bar-title class="font-[500]">Rental Pet</v-app-bar-title>
 
     <template v-slot:append>
-      <v-btn
-        @click="$emit('toggleUserDrawer')"
-        icon="mdi-account-badge-outline"
-      ></v-btn>
+      <v-btn @click="() => onSwapRoleActor()" icon="mdi-account-convert"> </v-btn>
     </template>
   </v-app-bar>
 </template>

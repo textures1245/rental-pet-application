@@ -25,7 +25,47 @@ export const usePathStore = defineStore("pathState", {
         path: "/account-info",
       },
     ],
-    appPaths: <DrawerMenu[]>[
+    employeePaths: <DrawerMenu[]>[
+      {
+        prependIcon: "mdi-dog",
+        title: "รายการยืนยันการเช่า",
+        name: "userPet",
+        path: "/my-pet-list",
+      },
+      {
+        prependIcon: "mdi-account",
+        title: "ข้อมูลบัญชี",
+        name: "userInfo",
+        path: "/account-info",
+      },
+      {
+        prependIcon: "mdi-draw-pen",
+        title: "รายการสัญญาการเช่า",
+        name: "contract-list",
+        path: "/contract-list",
+      },
+    ],
+    appUserPaths: <DrawerMenu[]>[
+      {
+        prependIcon: "mdi-home-heart",
+        title: "หน้าหลัก",
+        name: "dashboard",
+        path: "/dashboard",
+      },
+      {
+        prependIcon: "mdi-dog-side",
+        title: "รายการสัตว์",
+        name: "petList",
+        path: "/pet-list",
+      },
+      {
+        prependIcon: "mdi-file-sign",
+        title: "ทำสัญญาการเช่า",
+        name: "petContraction",
+        path: "/contractor",
+      },
+    ],
+    appEmployeePaths: <DrawerMenu[]>[
       {
         prependIcon: "mdi-home-heart",
         title: "หน้าหลัก",
@@ -44,17 +84,13 @@ export const usePathStore = defineStore("pathState", {
         name: "checkSchedule",
         path: "/pet-schedule-checker",
       },
-      {
-        prependIcon: "mdi-file-sign",
-        title: "ทำสัญญาการเช่า",
-        name: "petContraction",
-        path: "/contractor",
-      },
     ],
   }),
   getters: {
     getUserPaths: (state) => state.userPaths,
-    getAppPaths: (state) => state.appPaths,
+    getEmployeePaths: (state) => state.employeePaths,
+    getAppUserPaths: (state) => state.appUserPaths,
+    getAppEmployeePaths: (state) => state.appEmployeePaths,
   },
   actions: {},
 });

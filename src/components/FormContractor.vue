@@ -4,7 +4,7 @@ import { useUserState } from "../store/userState";
 export default {
   data() {
     return {
-      user: useUserState().getUserByID(0),
+      user: useUserState().$state.users[0],
       dialog: false,
       hasSaved: false,
       isEditing: false,
@@ -116,7 +116,7 @@ export default {
 
       <v-card-actions class="">
         <v-checkbox
-            color="primary"
+          color="primary"
           v-model="isEditing"
           label="ฉันเข้าใจและยินยอมกฏที่ตั้งไว้แล้ว"
         ></v-checkbox>
