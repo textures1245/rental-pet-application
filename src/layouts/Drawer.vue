@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      user: useUserState().getUserRoleByID(0),
+      user: useUserState().getUserRoleByID("0"),
       userState: useUserState(),
       display: useDisplay(),
       userDrawer: {

@@ -4,12 +4,17 @@ import {
   createWebHistory,
   RouterOptions,
   createWebHashHistory,
+  useRoute,
 } from "vue-router";
 
 const DashboardFeature = () => import("../features/Dashborad.vue");
 const PetListFeature = () => import("../features/PetList.vue");
 const ScheduleCheckerFeature = () => import("../features/ScheduleChecker.vue");
 const ContractorFeature = () => import("../features/Contractor.vue");
+const LoginFeature = () => import("../auth/LoginApp.vue");
+const signUpFeature = () => import("../auth/SignUpApp.vue");
+
+import { useAuthState } from "../store/authState";
 
 // const components = [HomeComponent, FormComponent, ListComponent, Contractor];
 // const appRoutes = usePathStore(pinia).$state.appPaths;
@@ -20,6 +25,16 @@ const ContractorFeature = () => import("../features/Contractor.vue");
 // }));
 
 const routes = [
+  {
+    path: "/sign-in",
+    name: "singIn",
+    component: LoginFeature,
+  },
+  {
+    path: "/sign-up",
+    name: "singUp",
+    component: signUpFeature,
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -48,10 +63,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.length === 0) {
-    next("/dashboard");
+  const isAuth = useAuthState().$state.isAuth;
+  if (!isAuth && to.matched.length === 0) {
+    next("/sign-in");
   } else {
-    next();
+    return next();
   }
 });
 

@@ -11,11 +11,11 @@ type Admin = {
 };
 
 export type User = {
-  id: number;
+  userId: string;
   memberId: string;
   citizenId: string;
   name: string;
-  gender: "male" | "female";
+  gender: "male" | "female" | "none";
   address: string;
   phoneNumber: string;
   email: string;
@@ -26,10 +26,10 @@ export type User = {
 };
 
 export type Employee = {
-  id: number;
+  userId: string;
   employeeId: string;
   name: string;
-  gender: "male" | "female";
+  gender: "male" | "female" | "none";
   citizenId: string;
   phoneNumber: string;
   address: string;
@@ -44,7 +44,7 @@ type VIPState = {
   subscriptionSince: Date;
   startDate: Date;
   endDate: Date;
-  creditEarned: number;
+  creditEarned?: number;
 };
 
 export type VIPUser = User & VIPState;
@@ -60,7 +60,7 @@ export const useUserState = defineStore("userState", {
     return {
       users: <VIPUser[] | User[]>[
         <VIPUser>{
-          id: 0,
+          userId: "0",
           memberId: randomId(10),
           citizenId: randomId(10),
           name: "Sandra Adams",
@@ -80,7 +80,7 @@ export const useUserState = defineStore("userState", {
       ],
       employees: <Employee[]>[
         {
-          id: 0,
+          userId: "0",
           employeeId: randomId(10),
           name: "Cjxhdudbdh Djdheudndj",
           gender: "male",
@@ -99,14 +99,16 @@ export const useUserState = defineStore("userState", {
   },
   getters: {},
   actions: {
-    getUserRoleByID(id: number): User | VIPUser | Employee {
+    getUserRoleByID(userId: string): User | VIPUser | Employee {
       let getUserState: VIPUser | User | Employee = {} as any;
       if (this.$state.roleToggler === "user") {
         getUserState = <VIPUser | User>(
-          this.$state.users.find((user) => user.id === id)
+          this.$state.users.find((user) => user.userId === userId)
         );
       } else {
-        getUserState = <Employee>this.$state.employees.find((e) => e.id === id);
+        getUserState = <Employee>(
+          this.$state.employees.find((e) => e.userId === userId)
+        );
       }
 
       if (getUserState) {
@@ -115,9 +117,22 @@ export const useUserState = defineStore("userState", {
         throw new Error("User state not found");
       }
     },
+
     setActorRole(role: "user" | "admin"): void {
       this.$state.roleToggler = role;
       router.push("/dashboard");
+    },
+
+    pushUser(userData: VIPUser | Employee, pushOn: "User" | "Employee") {
+      if (pushOn === "User") {
+        let user = <VIPUser>userData;
+        this.$state.users.push(user);
+        this.setActorRole("user");
+      } else {
+        let employee = <Employee>userData;
+        this.$state.employees.push(employee);
+        this.setActorRole("admin");
+      }
     },
   },
 });
