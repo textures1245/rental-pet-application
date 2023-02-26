@@ -1,5 +1,14 @@
 <script lang="ts">
 import { AccountType, Account, AccountDetail } from "../store/authState";
+import { useUserState, randomId, EmployeeRole } from "../store/userState";
+import { useAuthState } from "../store/authState";
+import { Employee } from "../store/userState";
+import { VIPUser } from "../store/userState";
+import { Pet } from "../store/petState";
+import { Timestamp } from "@firebase/firestore";
+import Swal from "sweetalert2";
+import { reload } from "@firebase/auth";
+import router from "../routes/appRoutes";
 
 export default {
   data: () => ({
@@ -11,7 +20,6 @@ export default {
       user: <AccountDetail>{
         name: "",
         citizenId: "",
-        memberId: "",
         gender: "",
         address: "",
         phoneNumber: "",
@@ -33,11 +41,96 @@ export default {
     },
   },
 
+  mounted() {
+    this.accountData = {
+      email: "",
+      password: "",
+      type: "",
+      user: <AccountDetail>{
+        name: "",
+        citizenId: "",
+        gender: "",
+        address: "",
+        phoneNumber: "",
+        imgPic: "",
+      },
+    };
+  },
+
   methods: {
     async submitHandler() {
       const onLoaded = new Promise((r) => setTimeout(r, 1000));
       onLoaded.then(() => {
-        console.log(this.accountData);
+        let userData = <VIPUser | Employee>{};
+        if (this.accountData.type === "User") {
+          userData = <VIPUser>{
+            ...this.accountData.user,
+            userId: "",
+            memberId: randomId(13),
+            petsOwning: <Pet[]>[],
+            petsRequired: <Pet[]>[],
+            email: this.accountData.email,
+            status: "vip",
+            subscriptionSince: Timestamp.now(),
+            startDate: Timestamp.now(),
+            endDate: Timestamp.now(),
+            creditEarned: 0,
+          };
+        } else {
+          userData = <Employee>{
+            ...this.accountData.user,
+            userId: "",
+            employeeId: randomId(13),
+            email: this.accountData.email,
+            role: <EmployeeRole>{
+              type: "Admin",
+              task: [],
+            },
+            startDate: Timestamp.now(),
+            endDate: Timestamp.now(),
+            creditEarned: 0,
+          };
+        }
+        useAuthState()
+          .onSignupWithUserDetail(
+            this.accountData.email,
+            this.accountData.password,
+            <AccountType>this.accountData.type,
+            userData
+          )
+          .then(() => {
+            //- reset
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 6000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+
+            Toast.fire({
+              icon: "success",
+              html: `<p>คุณได้สมัครสมาชิกในสถานะ: ${this.accountData.type} เป็นที่เรียบร้อย</p> <p>ระบบกำลังจะ redirect ไปยังหน้าหลักได้โปรดรอ</p>`,
+            });
+            this.accountData = {
+              email: "",
+              password: "",
+              type: "",
+              user: <AccountDetail>{
+                name: "",
+                citizenId: "",
+                gender: "",
+                address: "",
+                phoneNumber: "",
+                imgPic: "",
+              },
+            };
+            console.log(userData, this.accountData);
+          });
       });
     },
   },
@@ -66,6 +159,7 @@ export default {
               v-model="accountData.email"
               label="Email"
               type="email"
+              placeholder="โปรดกรอกอีเมล์ที่ต้องการสมัคร"
               input-class="w-full"
               validation="required|email"
               value=""
@@ -74,6 +168,7 @@ export default {
               v-model="accountData.password"
               label="Password"
               type="password"
+              placeholder="โปรดกรอกรหัสผ่านที่ต้องการสมัคร"
               input-class="w-full"
               validation="required|length:6"
               value=""
@@ -160,6 +255,14 @@ export default {
       <v-divider></v-divider>
 
       <v-card-actions>
+        <v-btn
+          v-if="step === 1"
+          variant="flat"
+          color="info"
+          @click="() => $router.push('/sign-in')"
+        >
+          กลับสู่หน้าล็อกอิน
+        </v-btn>
         <v-btn v-if="step > 1" variant="text" @click="step--"> ย้อนกลับ </v-btn>
         <v-spacer></v-spacer>
         <v-btn v-if="step < 2" color="primary" variant="flat" @click="step++">

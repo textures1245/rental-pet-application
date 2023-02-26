@@ -3,20 +3,79 @@ import { ref, toHandlers } from "vue";
 import { User, VIPUser, useUserState } from "../store/userState";
 import { Pet } from "../store/petState";
 import LoadingProps from "../components/LoadingProps.vue";
+import { useAuthState } from "../store/authState";
+import Swal from "sweetalert2";
 
 export default {
   components: { LoadingProps },
   props: ["pets"],
   data() {
     return {
+      employeeMode: ref(false),
       onLoaded: ref(true),
       onRole: useUserState().$state.roleToggler,
-      user: useUserState().$state.users[0],
+      loadedUserCollection: <VIPUser[]>[],
+      userSelectedName: {},
+      user: <VIPUser>useUserState().$state.users[0] || null,
+
+      //- todo: changes
+
+      //- if account had "User" role active then loaded otherwise wait for client to select user
       pets:
         useUserState().$state.roleToggler === "user"
-          ? <Pet[]>useUserState().$state.users[0].petsOwning
-          : <Pet[]>useUserState().$state.users[0].petsRequired,
+          ? ref(<Pet[]>useUserState().$state.users[0].petsOwning)
+          : ref(<Pet[]>[]),
     };
+  },
+
+  watch: {
+    userSelectedName(newUserName: string) {
+      if (newUserName) {
+        this.user = <VIPUser>(
+          this.loadedUserCollection.find((user) => user.name == newUserName)
+        );
+        this.pets = this.user.petsRequired;
+      }
+    },
+  },
+  async mounted() {
+    //- if use is empty then enter to employee mode
+    if (!this.user) {
+      this.onSelectUserMode();
+    }
+  },
+  methods: {
+    async onSelectUserMode() {
+      useAuthState().userCollection.then((user) => {
+        const loadedUsers: VIPUser[] = user.map((user) => user);
+        this.loadedUserCollection = loadedUsers;
+        this.employeeMode = true;
+      });
+    },
+
+    onPushUserPetOwing(petData: Pet, acceptTo: VIPUser) {
+      useUserState()
+        .pushUserPetOwing(petData, acceptTo)
+        .then((petIndexTarget) => {
+          this.user.petsRequired.splice(petIndexTarget, 1);
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "success",
+            title: `ดำเนินการเช่าให้คุณ ${acceptTo.name}`,
+          });
+        });
+    },
   },
 };
 </script>
@@ -26,7 +85,7 @@ export default {
     @loaded-async="() => (onLoaded = false)"
   ></LoadingProps>
   <v-list v-else lines="two">
-    <v-list-subheader>
+    <v-list-subheader v-if="user !== null">
       <div class="flex gap-2 items-center my-4">
         <div class="">
           <v-icon color="pink" icon="mdi-paw" size="24"></v-icon>
@@ -48,11 +107,50 @@ export default {
           </p>
         </div>
       </div>
+      <hr class="border-gray-200 w-full" />
     </v-list-subheader>
-    <hr class="border-gray-200" />
+
+    <div v-if="employeeMode">
+      <v-list-subheader>
+        <div class="flex gap-6 items-center my-4">
+          <div class="">
+            <v-icon color="pink" icon="mdi-account" size="24"></v-icon>
+          </div>
+          <div class="">
+            <p>โปรดเลือกสมาชิกที่ต้องการดำการ</p>
+          </div>
+        </div>
+      </v-list-subheader>
+      <v-autocomplete
+        v-model="userSelectedName"
+        :items="loadedUserCollection"
+        chips
+        color="blue-grey-lighten-2"
+        item-title="name"
+        item-value="name"
+        label="Select"
+      >
+        <template v-slot:chip="{ props, item }">
+          <v-chip
+            v-bind="props"
+            :prepend-avatar="item.raw?.imgPic"
+            :text="item.raw?.name"
+          ></v-chip>
+        </template>
+
+        <template v-slot:item="{ props, item }">
+          <v-list-item
+            class="cursor-pointer !z-10 bg-white"
+            v-bind="props"
+            :prepend-avatar="item?.raw?.imgPic"
+            :title="item?.raw?.name"
+          ></v-list-item>
+        </template>
+      </v-autocomplete>
+    </div>
 
     <!--- pet detail  -->
-    <v-expansion-panels v-for="pet in pets as Pet[]">
+    <v-expansion-panels v-if="user !== null" v-for="pet in pets as Pet[]">
       <v-expansion-panel>
         <v-expansion-panel-title class="h-20">
           <template v-slot="{ open }">
@@ -113,6 +211,7 @@ export default {
                 </div>
               </template>
             </v-list-item>
+
             <v-list-item v-else>
               <template v-slot:prepend>
                 <div class="flex gap-2">
@@ -137,7 +236,11 @@ export default {
                     <v-img :src="pet.imgPic" cover></v-img>
                   </v-avatar>
                   <p class="text-xs badge badge-xs badge-glass">
-                    {{ pet.name }}
+                    {{
+                      pet.name.length > 6
+                        ? pet.name.substring(0, 6) + ".."
+                        : pet.name
+                    }}
                   </p>
                 </div>
               </template>
@@ -175,7 +278,8 @@ export default {
             </div>
             <div class="">
               <p class="text-gray-600">
-                ตรวจครั้งล่าสุด: {{ pet.healthy.lastChecked.toDateString() }}
+                ตรวจครั้งล่าสุด:
+                {{ pet.healthy.lastChecked.toDate().toDateString() }}
               </p>
             </div>
             <div v-if="pet.healthy.probDesc" class="col-span-2">
@@ -189,11 +293,17 @@ export default {
             <div class="">
               <p class="text-gray-600">ประเภทการเช่า: {{ pet.rentType }}</p>
             </div>
+            <p class="text-gray-600">
+              เวลาการเช่า (นาที): {{ pet.rentalTime }}
+            </p>
             <div class="" v-if="pet.timeLeft !== null && onRole === 'user'">
               <p class="text-gray-600">เวลาคงเหลือ: {{ pet.timeLeft }} นาที</p>
             </div>
+            <div class=""></div>
             <v-btn
               v-if="onRole === 'admin'"
+              class=""
+              @click="() => onPushUserPetOwing(pet, user)"
               size="small"
               color="primary"
               prepend-icon="mdi-check-bold"

@@ -23,7 +23,7 @@ export default {
     <v-list-subheader>
       <div
         v-if="(User as VIPUser).status === 'vip' || (User as Employee)"
-        class=""
+        class="mt-2"
       >
         <div
           v-if="(User as VIPUser).status === 'vip'"
@@ -41,7 +41,7 @@ export default {
               {{ "บัญชีของคุณอยู่ใน Tier VIP Membership" }}
             </p>
             <p class="text-caption text-xs">
-              ตั้งแต่ {{ (User as VIPUser).subscriptionSince.toDateString() }}
+              ตั้งแต่ {{ (User as VIPUser).subscriptionSince.toDate().toDateString() }}
             </p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default {
       v-if="(User as VIPUser).status === 'vip' || (User as Employee).role.type === 'Admin'"
     >
       <v-list-item
-        :title="(User as VIPUser | Employee).startDate.toDateString()"
+        :title="((User as VIPUser | Employee).startDate.toDate().toDateString())"
       >
         <template v-slot:prepend>
           <v-avatar>
@@ -159,7 +159,9 @@ export default {
           }}</span>
         </template>
       </v-list-item>
-      <v-list-item :title="(User as VIPUser | Employee).endDate.toDateString()">
+      <v-list-item
+        :title="((User as VIPUser | Employee).endDate.toDate().toDateString())"
+      >
         <template v-slot:prepend>
           <v-avatar>
             <v-icon size="28" icon="mdi-ray-end"></v-icon>

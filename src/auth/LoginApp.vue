@@ -1,6 +1,8 @@
 <script lang="ts">
 import { AccountType, Account } from "../store/authState";
+import { useAuthState } from "../store/authState";
 import { VIPUser } from "../store/userState";
+import Swal from "sweetalert2";
 export default {
   data: () => ({
     accountData: <Account>{
@@ -10,11 +12,50 @@ export default {
     },
   }),
 
+  mounted() {
+    this.accountData = <Account>{};
+  },
+
   methods: {
     async submitHandler() {
       const onLoaded = new Promise((r) => setTimeout(r, 1000));
       onLoaded.then(() => {
-        console.log(this.accountData);
+        useAuthState()
+          .onSignIn(
+            this.accountData.email,
+            this.accountData.password,
+            this.accountData.type
+          )
+          .then((isAuthValid) => {
+            if (isAuthValid) {
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+
+              Toast.fire({
+                icon: "success",
+                title: "ล็อกอินเสร็จสิ้น, ยินดีต้อนรับกลับฮับเจ้านาย",
+              });
+              this.accountData = <Account>{};
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "การเข้าสูระบบผิดผลาด",
+                text: `เราไม่ตรวจพบบัญชีที่คุณกรอกไว้ ได้โปรดลองกรอกดูอีกครั้ง`,
+              });
+            }
+          })
+          .catch(async (err) => {
+            console.error(err);
+          });
       });
     },
   },
@@ -43,7 +84,7 @@ export default {
           <v-card-text>
             <FormKit
               v-model="accountData.email"
-              label="Username"
+              label="Email"
               type="email"
               input-class="w-full"
               validation="required|email"

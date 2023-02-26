@@ -42,12 +42,12 @@ export const usePathStore = defineStore("pathState", {
         name: "userInfo",
         path: "/account-info",
       },
-      {
-        prependIcon: "mdi-draw-pen",
-        title: "รายการสัญญาการเช่า",
-        name: "contractList",
-        path: "/contract-list",
-      },
+      // {
+      //   prependIcon: "mdi-draw-pen",
+      //   title: "รายการสัญญาการเช่า",
+      //   name: "contractList",
+      //   path: "/contract-list",
+      // },
     ],
     appUserPaths: <DrawerMenu[]>[
       {
@@ -82,12 +82,12 @@ export const usePathStore = defineStore("pathState", {
         name: "petList",
         path: "/pet-list",
       },
-      {
-        prependIcon: "mdi-calendar-clock",
-        title: "เช็คตารางการเช่าสัตว์วันนี้",
-        name: "checkSchedule",
-        path: "/pet-schedule-checker",
-      },
+      // {
+      //   prependIcon: "mdi-calendar-clock",
+      //   title: "เช็คตารางการเช่าสัตว์วันนี้",
+      //   name: "checkSchedule",
+      //   path: "/pet-schedule-checker",
+      // },
     ],
   }),
   getters: {

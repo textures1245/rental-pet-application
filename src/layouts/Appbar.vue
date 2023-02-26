@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useUserState } from "../store/userState";
 import Swal from "sweetalert2";
+import { useAuthState } from "../store/authState";
 export default {
   props: [],
   setup() {
@@ -27,6 +28,11 @@ export default {
         ? this.userState.setActorRole("admin")
         : this.userState.setActorRole("user");
       this.onSwappedRoleAlert();
+    },
+
+    async onLogout() {
+      this.userState.clearUserStates();
+      await useAuthState().onSignOut();
     },
   },
 };
@@ -58,9 +64,11 @@ export default {
     <v-app-bar-title class="font-[500]">Rental Pet</v-app-bar-title>
 
     <template v-slot:append>
-      <p>สลับ Actor</p>
-      <v-btn @click="() => onSwapRoleActor()" icon="mdi-account-convert">
-      </v-btn>
+      <!-- <p>สลับ Actor</p> -->
+      <!-- <v-btn @click="() => onSwapRoleActor()" icon="mdi-account-convert">
+      </v-btn> -->
+      <p class="text-sm">ออกจากระบบ</p>
+      <v-btn @click="() => onLogout()" icon="mdi-logout"> </v-btn>
     </template>
   </v-app-bar>
 </template>

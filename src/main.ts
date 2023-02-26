@@ -7,8 +7,10 @@ import store from "./store/store";
 //- firebase
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "./firebase.config";
+import { firebaseConfig, firebaseApp } from "./firebase.config";
 import { getAnalytics } from "firebase/analytics";
+import { VueFire, VueFireAuth } from "vuefire";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -31,11 +33,19 @@ const app = createApp(App);
 const pinia = createPinia();
 
 // Initialize Firebase
-initializeApp(firebaseConfig);
 
 const vuetify = createVuetify({
   components,
   directives,
+});
+
+app.use(VueFire, {
+  // imported above but could also just be created here
+  firebaseApp,
+  modules: [
+    // we will see other modules later on
+    VueFireAuth(),
+  ],
 });
 
 app.use(pinia);

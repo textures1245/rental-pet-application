@@ -51,9 +51,12 @@ export default {
     const modelCategory = ["dog", "cat", "bunny", "bird"];
     return { petCardSlides, category, modelCategory, onLoaded: ref(true) };
   },
+  mounted() {
+    this.model = null;
+  },
   data: () => ({
     model: null,
-    petStates: usePetState().getPets,
+    petStates: usePetState().pets,
   }),
 };
 </script>
@@ -89,7 +92,7 @@ export default {
             height="200"
             width="300"
             cover
-            :src="isSelected ? card.imgPreview : ''"
+            :src="isSelected && model !== null ? card.imgPreview : ''"
             @click="toggle"
           >
             <div class="d-flex fill-height align-center justify-center">

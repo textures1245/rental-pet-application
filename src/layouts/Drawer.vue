@@ -2,6 +2,7 @@
 import { ref, Ref } from "vue";
 import { useDisplay } from "vuetify";
 import { useUserState } from "../store/userState";
+import { useAuthState } from "../store/authState";
 import {
   usePathStore,
   DrawerMenu,
@@ -30,7 +31,7 @@ export default {
   },
   data() {
     return {
-      user: useUserState().getUserRoleByID("0"),
+      user: useAuthState().$state.currAccount,
       userState: useUserState(),
       display: useDisplay(),
       userDrawer: {
@@ -88,7 +89,7 @@ export default {
               ></v-icon>
             </span>
             <v-avatar>
-              <v-img :src="user.imgPic" width="32"></v-img>
+              <v-img cover :src="user.imgPic" width="32"></v-img>
             </v-avatar>
           </div>
         </template>
@@ -131,9 +132,9 @@ export default {
       <UserPetList
         v-if="userDrawer.toggleOptionDrawer === 'userPet'"
       ></UserPetList>
-      <ContractList
+      <!-- <ContractList
         v-if="userDrawer.toggleOptionDrawer === 'contractList'"
-      ></ContractList>
+      ></ContractList> -->
     </v-card>
   </v-navigation-drawer>
 </template>

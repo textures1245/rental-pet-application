@@ -18,6 +18,7 @@
     "pinia": "^2.0.30",
     "sweetalert2": "^11.7.2",
     "vue": "^3.2.45",
+    "vuefire": "^3.0.1",
     "vuetify": "^3.1.4"
   },
   "devDependencies": {
